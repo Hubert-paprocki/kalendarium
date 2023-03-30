@@ -6,10 +6,10 @@ import {
   labelClass,
   errorClass,
 } from "./FormHelperComponents/FormStyling";
-import { BlogPost } from "../App";
+import BlogPost from "./BlogPosts/BlogPostInterface";
 
 interface NewBlogPostFormProps {
-  onSubmit: (values: BlogPost, creationDate: Date) => void;
+  readonly onSubmit: (values: BlogPost) => void;
 }
 
 function NewBlogPostForm({ onSubmit }: NewBlogPostFormProps) {
@@ -20,7 +20,7 @@ function NewBlogPostForm({ onSubmit }: NewBlogPostFormProps) {
       initialValues={{
         text: "",
         date: currentDateString,
-        important: "",
+        important: "false",
       }}
       validate={validate}
       onSubmit={(values, { resetForm }) => {
@@ -34,53 +34,56 @@ function NewBlogPostForm({ onSubmit }: NewBlogPostFormProps) {
           creationDate: creationDateWithOffset.toISOString(),
           id: Date.now(),
         };
-        onSubmit(newPost, creationDateWithOffset);
+        onSubmit(newPost);
         resetForm();
       }}
     >
-      {() => (
-        <Form className="flex flex-col md:flex-row gap-x-3 gap-y-4 md:gap-y-6 py-10 px-20 justify-center text-center">
-          <div className="">
-            <label htmlFor="text" className={labelClass}>
-              Opis wydarzenia
-            </label>
-            <Field
-              id="text"
-              name="text"
-              placeholder="Tekst"
-              className={fieldClass}
-            />
-            <ErrorMessage name="text" component="p" className={errorClass} />
-          </div>
+      <Form className="flex flex-col md:flex-row gap-x-3 gap-y-4 md:gap-y-6 py-10 px-20 justify-center text-center">
+        <div className="">
+          <label htmlFor="text" className={labelClass}>
+            Opis wydarzenia
+          </label>
+          <Field
+            id="text"
+            name="text"
+            placeholder="Tekst"
+            className={fieldClass}
+          />
+          <ErrorMessage name="text" component="p" className={errorClass} />
+        </div>
 
-          <div className="">
-            <label htmlFor="date" className={labelClass}>
-              Data wydarzenia
-            </label>
-            <Field id="date" name="date" type="date" className={fieldClass} />
-            <ErrorMessage
-              name="date"
-              component="p"
-              className={errorClass}
-            ></ErrorMessage>
-          </div>
+        <div className="">
+          <label htmlFor="date" className={labelClass}>
+            Data wydarzenia
+          </label>
+          <Field id="date" name="date" type="date" className={fieldClass} />
+          <ErrorMessage
+            name="date"
+            component="p"
+            className={errorClass}
+          ></ErrorMessage>
+        </div>
 
-          <div className="">
-            <label className="text-stone-400 p-1 font-semibold flex items-center justify-center gap-2">
-              Ważne wydarzenie:
-              <Field type="radio" name="important" value="true" />
-            </label>
-          </div>
-          <div className="r">
-            <button
-              type="submit"
-              className="border-2 border-zinc-600 py-2 px-4 rounded-md hover:bg-zinc-600 hover:scale-105 duration-200"
-            >
-              Dodaj do listy
-            </button>
-          </div>
-        </Form>
-      )}
+        <div role="group" className="flex flex-col min-w-max p-2">
+          <p>wydarzenie:</p>
+          <label>
+            <Field type="radio" name="important" value="true" />
+            ważne
+          </label>
+          <label>
+            <Field type="radio" name="important" value="false" />
+            nie ważne
+          </label>
+        </div>
+        <div className="r">
+          <button
+            type="submit"
+            className="border-2 border-zinc-600 py-2 px-4 rounded-md hover:bg-zinc-600 hover:scale-105 duration-200"
+          >
+            Dodaj do listy
+          </button>
+        </div>
+      </Form>
     </Formik>
   );
 }

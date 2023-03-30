@@ -3,35 +3,28 @@ import "./App.css";
 import BlogPostList from "./components/BlogPosts/BlogPostList";
 import Footer from "./components/Footer";
 import NewBlogPostForm from "./components/NewBlogPostForm";
-interface BlogPost {
-  text: string;
-  date: string;
-  important: string;
-  creationDate: string;
-  id: number;
-}
+import BlogPost from "./components/BlogPosts/BlogPostInterface";
+
 function App(): JSX.Element {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [deletedPosts, setDeletedPosts] = useState<BlogPost[]>([]);
 
   const onDelete = (postToDelete: BlogPost) => {
-    setDeletedPosts((prevDeletedPosts) => [...prevDeletedPosts, postToDelete]);
     setPosts((prevPosts) => prevPosts.filter((post) => post !== postToDelete));
+    setDeletedPosts((prevDeletedPosts) => [...prevDeletedPosts, postToDelete]);
   };
 
-  const onEdit = (postToUpdate: BlogPost, updatedValues: object) => {
+  const onEdit = (updatedPost: BlogPost) => {
+    console.log(updatedPost, `updatedPost`);
     setPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post === postToUpdate ? { ...post, ...updatedValues } : post
+      prevPosts.map((post, index) =>
+        index + 1 === updatedPost.id ? { ...updatedPost } : post
       )
     );
   };
 
-  const addNewPost = (values: BlogPost, creationDate: Date) => {
-    setPosts((prevPosts) => [
-      ...prevPosts,
-      { ...values, creationDate: creationDate.toISOString() },
-    ]);
+  const addNewPost = (values: BlogPost) => {
+    setPosts((prevPosts) => [...prevPosts, { ...values }]);
   };
 
   return (
@@ -50,10 +43,5 @@ function App(): JSX.Element {
     </>
   );
 }
-export type { BlogPost };
+
 export default App;
-// const onEdit = (postToDelete: object, values: object) => {
-//   setPosts((prevPosts) =>
-//     prevPosts.map((post) => (post === postToEdit ? { ...values } : post))
-//   );
-// };

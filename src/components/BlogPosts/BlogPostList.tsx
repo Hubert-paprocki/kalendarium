@@ -1,11 +1,11 @@
 import BlogPostItem from "./BlogPostItem";
-import { BlogPost } from "../../App";
+import BlogPost from "./BlogPostInterface";
 
 interface BlogPostListProps {
-  posts: BlogPost[];
-  deletedPosts: BlogPost[];
-  onDelete: (postToDelete: BlogPost) => void;
-  onEdit: (postToEdit: BlogPost, updatedValues: object) => void;
+  readonly posts: BlogPost[];
+  readonly deletedPosts: BlogPost[];
+  readonly onDelete: (postToDelete: BlogPost) => void;
+  readonly onEdit: (updatedPost: BlogPost) => void;
 }
 
 function BlogPostList({
@@ -19,25 +19,18 @@ function BlogPostList({
     (post) => post.date < currentDateString
   );
 
-  let postId = 0;
-  let postIdDeleted = 0;
-
-  const renderPostList = (list: any[], isDeleted = false) =>
-    list.map((post) => {
-      isDeleted ? postIdDeleted++ : postId++;
-      // https://www.youtube.com/watch?v=DmH6YPWhaDY
-
+  const renderPostList = (list: BlogPost[]) =>
+    list.map((post, index) => {
       return (
         <BlogPostItem
-          key={isDeleted ? postIdDeleted : postId}
+          key={index + 1}
           text={post.text}
           date={post.date}
-          isImportant={post.important}
+          isImportant={post.important === "true"}
           creationDate={post.creationDate}
-          id={isDeleted ? postIdDeleted : postId}
+          id={index + 1}
           onDelete={() => onDelete(post)}
-          onEdit={(updatedValues: object) => onEdit(post, updatedValues)}
-          isDeleted={isDeleted}
+          onEdit={(newBlogPost: BlogPost) => onEdit(newBlogPost)}
         />
       );
     });
@@ -66,7 +59,7 @@ function BlogPostList({
         <>
           <p>Usunięte wydarzenia:</p>
           <ul className="flex gap-5 mb-20 flex-wrap max-w-6xl justify-center opacity-30">
-            {renderPostList(deletedPosts, true)}
+            {renderPostList(deletedPosts)}
           </ul>
         </>
       )}

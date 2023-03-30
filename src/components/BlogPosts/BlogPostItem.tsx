@@ -1,5 +1,4 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import FormValues from "../FormHelperComponents/FormValuesInterface";
 import { useState } from "react";
 import validate from "../FormHelperComponents/FormValidation";
 import {
@@ -7,16 +6,16 @@ import {
   labelClass,
   errorClass,
 } from "../FormHelperComponents/FormStyling";
+import BlogPost from "./BlogPostInterface";
 
 interface BlogPostItemProps {
-  text: string;
-  date: string;
-  isImportant: boolean;
-  creationDate: string;
-  id: number;
-  onDelete: () => void;
-  onEdit: (values: FormValues) => void;
-  isDeleted: boolean;
+  readonly text: string;
+  readonly date: string;
+  readonly isImportant: boolean;
+  readonly creationDate: string;
+  readonly id: number;
+  readonly onDelete: () => void;
+  readonly onEdit: (values: BlogPost) => void;
 }
 
 function BlogPostItem({
@@ -27,9 +26,9 @@ function BlogPostItem({
   id,
   onDelete,
   onEdit,
-  isDeleted,
 }: BlogPostItemProps): JSX.Element {
   const [isEdited, setIsEdited] = useState<boolean>(false);
+
   const creationDateSliced = creationDate.slice(0, 10);
   const creationTimeSliced = creationDate.slice(11, 16);
 
@@ -37,8 +36,9 @@ function BlogPostItem({
     onDelete();
   };
 
-  const handleSubmit = (values: FormValues) => {
-    onEdit(values);
+  const handleSubmit = (values: BlogPost) => {
+    const newBlogPost = { ...values };
+    onEdit(newBlogPost);
     setIsEdited(!isEdited);
   };
 
@@ -53,6 +53,8 @@ function BlogPostItem({
   return isEdited ? (
     <Formik
       initialValues={{
+        id: id,
+        creationDate: creationDate,
         text: text,
         date: date,
         important: isImportant.toString(),
